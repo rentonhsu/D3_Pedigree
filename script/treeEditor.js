@@ -1,56 +1,10 @@
-	var familyMembers ={
-					"name":"parents","members":{"dad":"alive","mom":"alive"},"gender":"male","isAlive":false,"live_toghther":false,"children":
-					[
-						{"name":"Person1","gender":"male","isPatient_him_her_self":true,"isAlive":true,"dwellToghther":true,"children":[]},
-						{"name":"Person2","gender":"male","isPatient_him_her_self":false,"isAlive":true,"dwellToghther":false,"children":[]},
-						{"name":"Person3","gender":"female","isPatient_him_her_self":false,"isAlive":true,"dwellToghther":false,"children":[]},
-						{"name":"Person4","gender":"male","isPatient_him_her_self":false,"isAlive":false,"dwellToghther":false,"children":[]},
-						{"name":"Person5","gender":"male","isPatient_him_her_self":false,"isAlive":true,"dwellToghther":false,"children":[]}
-					]
-				};
 
-		function JSON_OP(){
-			function jsonToStr(jsonObj){
-				try{
-					var cache = [];
-					var newJsonStr = JSON.stringify(jsonObj, function(key, value) {
-									    if (typeof value === 'object' && value !== null) {
-									        if (cache.indexOf(value) !== -1) {
-									            return;
-									        }
-									        cache.push(value);
-									    }
-									    return value;
-									});
-					return newJsonStr;
-				}
-				catch(error){
-					return error;
-				}
-			} 
-
-			function strToJson(jsonStr){
-				try{
-					return JSON.parse(jsonStr);
-				}
-				catch(error){
-					return error;
-				}
-			} 
-
-			function jsonOperation(method, obj){
-				if(method === 'jsonToStr')
-					return jsonToStr(obj);
-				else if(method === 'strToJson')
-					return strToJson(obj);
-			}
-			return jsonOperation;
-		}
-
-		function familyTree(attributes){
+		
+		function familyTree(data, attributes){
 				var width = $(attributes.container).attr('width');
 				var height = $(attributes.container).attr('height');
 				var self = this;
+				this.data = data;
 				this.radius = attributes.radius;
 				this.width = width;
 				this.height = height;
@@ -67,7 +21,7 @@
 			                 .range([this.offsetY,this.height-this.offsetY])
 			                 .domain([0,this.height]);
 			    this.tree = d3.layout.tree().size([this.width,this.height]);
-			    this.treeData = this.tree.nodes(familyMembers);
+			    this.treeData = this.tree.nodes(this.data);
 			    this.links = this.tree.links(this.treeData);
 			    this.diagonal = d3.svg.diagonal()
 		                   .projection(function(d){return [this.scaleX(d.x) , this.scaleY(d.y) ];});
@@ -78,46 +32,61 @@
                 this.mode = this.defaultMode;
                 this.defaultGender = 'male'; 
                 this.gender = this.defaultGender; 
-                this.patient_him_her_self = familyMembers.children[0];
+                this.patient_him_her_self = this.data.children[0];
+                this.json_parser;
 
+                 this.json_constructor = function json_parser(){
+											function objToJsonStr(Obj){
+												try{
+													var cache = [];
+													var newJsonStr = JSON.stringify(Obj, function(key, value) {
+																	    if (typeof value === 'object' && value !== null) {
+																	        if (cache.indexOf(value) !== -1) {
+																	            return;
+																	        }
+																	        cache.push(value);
+																	    }
+																	    return value;
+																	});
+													return newJsonStr;
+												}
+												catch(error){
+													return error;
+												}
+											} 
 
-                (function setup_buttons(){
-                	
-	                $('.treeEditMode')
-			    	.each(function(){
-			    		$(this)
-			    		.click(function(){		    			
-			    			self.mode = $(this).attr('id');
-			    			$('ul#treeEditorOptions a.treeEditMode.active')
-			    			.each(function(){
-			    				$(this).removeClass('active');
-			    			});
-			    			$(this).addClass('active');
-			    		});
-			    	});
+											function strToJson(jsonStr){
+												try{
+													return JSON.parse(jsonStr);
+												}
+												catch(error){
+													return error;
+												}
+											} 
 
+											function jsonOperation(method, obj){
+												if(method === 'objToJsonStr')
+													return objToJsonStr(obj);
+												else if(method === 'strToJson')
+													return strToJson(obj);
+											}
+											return jsonOperation;
+										};
 
-			    	$('.genderSwitch')
-			    	.each(function(){
-			    		$(this)
-			    		.click(function(){
-			    			self.gender = $(this).attr('id');
-			    			$('ul#treeEditorOptions a.genderSwitch.active')
-			    			.each(function(){
-			    				$(this).removeClass('active');
-			    			});
-			    			$(this).addClass('active');
-				    		});
-				    	});
-
-		    	}());	
 
 
 			    this.personGenerator = function (){
 			    								const name = 'Person';
 			    								var newName = name + (this.links.length + 1),
 			    									gender = this.gender;
-				    							return {name:newName,gender:gender,isPatient_him_her_self:false,isAlive:true,dwellToghther:false,children:[]};
+				    							return {
+				    									name:newName,
+				    									gender:gender,
+				    									isPatient_him_her_self:false,
+				    									isAlive:true,
+				    									dwellToghther:false,
+				    									children:[]
+				    									};
 									    };
 
 
@@ -327,9 +296,9 @@
 											{
 												try{
 														return  "M" + this.scaleX(attrs.source.x) + "," + this.scaleY(attrs.source.y) 	+ 
-		 							 		 			"V" + this.scaleY(attrs.source.y + this.height / this.maxDepth / 2) + 
-		 							 		 			"H" + this.scaleX(attrs.target.x) + 
-		 							 		 			"V" + this.scaleY(attrs.target.y);
+				 							 		 			"V" + this.scaleY(attrs.source.y + this.height / this.maxDepth / 2) + 
+				 							 		 			"H" + this.scaleX(attrs.target.x) + 
+				 							 		 			"V" + this.scaleY(attrs.target.y);
 			 							 			}
 			 							 		catch(error){
 			 							 			return '提供之XY值非數字';
@@ -337,44 +306,121 @@
 											}
 									}.bind(this);
 
+			this.getNodePositionByIndexAndProperty = function(index, attr){
+				var target = this.links[index][attr];
+				return [target.x, target.y];
+			};
+
+			this.appendSvgShape = function(target, shape, attrs){
+				d3.select(target).append(shape).attr(attrs);
+			};
+
+
 			this.draw_rootConnection = function(){
+				
+				const radius = 10,
+					  rootPosition = this.getNodePositionByIndexAndProperty(0, 'source'),
+					  cof_x = 1.5,
+					  cof_y = 0.7;
+					
+				var counter = 0,
+					length = 0,
+					rectAttr = {
+									x:this.links[0].source.x - this.offsetX*1.5, 
+									y:this.links[0].source.y + this.offsetY*0.5,width:radius*2
+									,height:radius*2,
+									fill:'white',
+									stroke:'steelblue',
+									'stroke-width':2
+								},
+
+					circleAttr = {
+									cx:this.links[0].source.x + this.offsetX*1.5, 
+									cy:this.links[0].source.y + this.offsetY*0.5 + radius,
+									r:radius,fill:'white',
+									stroke:'steelblue',
+									'stroke-width':2
+								},
+					shape1_x = rootPosition[0] - self.offsetX*cof_x,
+					shape1_y = rootPosition[1] + self.offsetY*cof_y,
+					path = null,
+					pathAttrs;
+					
+					
+
+				for(parent in this.data.parents){
+					pathAttrs = {'stroke':'#818181','stroke-width':1,'d':null,'fill':'none'};
+					this.data.parents[parent].gender === 'male'?this.appendSvgShape(self.nodeGrp, 'rect', rectAttr):this.appendSvgShape(self.nodeGrp, 'circle', circleAttr);
+					length++;
+
+					if(length%2 === 0){
+						pathAttrs.d = self.draw_connection([rootPosition[0] - self.offsetX*1.5, rootPosition[1] + self.offsetY*0.7], rootPosition,radius, 1);
+					}
+					else{
+						pathAttrs.d = self.draw_connection([rootPosition[0] + self.offsetX*1.5, rootPosition[1] + self.offsetY*0.7], rootPosition,radius, 0);
+					}
+					
+					this.appendSvgShape(this.lineGrp, 'path', pathAttrs);
+				}
+
 
 				
-				const radius = 10;
-				var pos = [self.links[0].source.x, self.links[0].source.y];
-				d3.select(self.nodeGrp).append('rect').attr({x:self.links[0].source.x - self.offsetX*1.5, y:self.links[0].source.y + self.offsetY*0.5,width:radius*2,height:radius*2,fill:'white',stroke:'steelblue','stroke-width':2});
-				d3.select(self.nodeGrp).append('circle').attr({cx:self.links[0].source.x + self.offsetX*1.5, cy:self.links[0].source.y + self.offsetY*0.5 + radius,r:radius,fill:'white',stroke:'steelblue','stroke-width':2});
-
-				var path1 = self.draw_connection([self.links[0].source.x - self.offsetX*1.5, self.links[0].source.y + self.offsetY*0.7], pos,radius, 1);
-
-				var path2 = self.draw_connection([self.links[0].source.x + self.offsetX*1.5, self.links[0].source.y + self.offsetY*0.7], pos,radius, 0);
-				console.log(path1, path2);
-
-				d3.select(this.lineGrp)
-			    .append('path')
-			    .attr({'stroke':'#818181','stroke-width':1,'d':path1,'fill':'none'});
-
-			    d3.select(this.lineGrp)
-			    .append('path')
-			    .attr({'stroke':'#818181','stroke-width':1,'d':path2,'fill':'none'});
 			};
 
 
 
 			 	//更新畫布
 			 	this.update = function(){
-			 		this.clean();
+			 		this.clean();//清空畫布
+			 		//更新d3樹
 			 		this.tree = d3.layout.tree().size([this.width,this.height]);
-				    this.treeData = this.tree.nodes(familyMembers);
+				    this.treeData = this.tree.nodes(this.data);
 				    this.links = this.tree.links(this.treeData);
 			 		this.count_maxDepth();
 					this.draw_familyTree();;
 					this.draw_status();
 					this.draw_rootConnection();
-					// this.svgEleSetup();
 			 	};
 
+
+
+			 	
+			 	this.json = new this.json_constructor();
 			 	this.update();
-		    	
+
+			 	(function setup_buttons(){
+                	
+	                $('.treeEditMode')
+			    	.each(function(){
+			    		$(this)
+			    		.click(function(){		    			
+			    			self.mode = $(this).attr('id');
+			    			$('ul#treeEditorOptions a.treeEditMode.active')
+			    			.each(function(){
+			    				$(this).removeClass('active');
+			    			});
+			    			$(this).addClass('active');
+			    		});
+			    	});
+
+
+			    	$('.genderSwitch')
+			    	.each(function(){
+			    		$(this)
+			    		.click(function(){
+			    			self.gender = $(this).attr('id');
+			    			$('ul#treeEditorOptions a.genderSwitch.active')
+			    			.each(function(){
+			    				$(this).removeClass('active');
+			    			});
+			    			$(this).addClass('active');
+				    		});
+				    	});
+
+			    	$('#save').click(function(){
+			    		console.log(self.json('objToJsonStr', self.data));
+			    	});
+
+		    	}());	
 		    		
 		}
