@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	
+	<title>Family tree Example</title>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	 
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	  <link rel="stylesheet" type="text/css" href="./css/tree.css">
+	
+</head>
+<body>
+	<div class="container">
+	  <h2>Modal Example</h2>
+	  <!-- Trigger the modal with a button -->
+	  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+
+	  <!-- Modal -->
+	  <div class="modal fade" id="myModal" role="dialog">
+	    <div class="modal-dialog">
+	    
+	      <!-- Modal content-->
+	      <div class="modal-content" style="width:700px;">
+	        <div class="modal-header">
+	          <button type="button" class="close" data-dismiss="modal">&times;</button>
+	          <i class="fa fa-bars fa-2x" aria-hidden="true"></i>
+	        </div>
+	        <div id="pedigree" class="modal-body">
+	        	<svg id="treeEditor" width="698" height="400">
+	        	<defs>
+				    <pattern xmlns="http://www.w3.org/2000/svg" id="pattern21" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(0)">
+					    <!-- <rect x="0" y="0" width="6" height="6" fill="white" stroke="none"/> -->
+					    <line x1="0" y1="4" x2="6" y2="4" stroke="steelblue" stroke-width="2"/>
+					    <line x1="4" y1="0" x2="4" y2="6" stroke="#steelblue" stroke-width="2"/>
+				    </pattern>
+				    <pattern xmlns="http://www.w3.org/2000/svg" id="patient" width="6" height="6" patternUnits="userSpaceOnUse">
+					    <rect x="0" y="0" width="6" height="6" fill="white" stroke="none"/>
+					    <rect x="0" y="0" width="2" height="2" fill="steelblue" stroke="none"/>
+					    <rect x="3" y="3" width="2" height="2" fill="steelblue" stroke="none"/>
+				    </pattern>
+				</defs>
+					<g id="lineGrp"></g>
+	        		<g id="nodeGrp"></g>
+	        	</svg>
+	        </div>
+	        <div class="modal-footer">
+	        <div>
+	        	<ul id="treeEditorOptions" class="nav nav-pills">
+				  <li class="nav-item">
+					  <a id="add" class="btn active treeEditMode">
+					  	<img class="tools" src="./icons/add-user-2-xxl.png" />
+					  </a>				    
+				  </li>
+				  <li class="nav-item">
+				    <a id="remove" class="btn treeEditMode">
+					  	<img class="tools" src="./icons/remove-user-xxl.png" />
+					  </a>		
+				  </li>
+				  <li class="nav-item">
+				    <a id="edit" class="btn treeEditMode">
+					  	<img class="tools" src="./icons/edit-user-xxl.png" />
+					  </a>		
+				  </li>
+
+				  <li class="nav-item">
+				    <a id="isAlive" class="btn treeEditMode">
+					  	<img class="tools" src="./icons/smiley-frown---512.png" />
+					  </a>		
+				  </li>
+
+				  <li class="nav-item">
+				    <a id="liveTogether" class="btn treeEditMode">
+					  	<img class="tools" src="./icons/home.png" />
+					  </a>		
+				  </li>
+
+
+				  
+				  <li class="nav-item">
+				    <a id="target" class="btn treeEditMode">
+					  	<img class="tools" src="./icons/map_6-128.png" />
+					  </a>		
+				  </li>
+
+				  <li class="nav-item">
+				    <a id="male" class="btn genderSwitch active">
+					  	<img class="tools" src="./icons/boy-512.png" />
+					  </a>		
+				  </li>
+				  <li class="nav-item">
+				    <a id="female" class="btn genderSwitch">
+					  	<img class="tools" src="./icons/girl-512.png" />
+					  </a>		
+				  </li>
+
+
+				  <li class="nav-item">
+				    <a id="save" class="btn save">
+					  	<img class="tools" src="./icons/save_icon.png" />
+					  </a>		
+				  </li>
+
+				</ul>
+	        </div>
+	          
+	        </div>
+	      </div>
+	      
+	    </div>
+	  </div>
+	  
+	</div>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.min.js"></script>
+  	<script src="./script/treeEditor.js"></script>>
+  	<script>//引入tree module
+  	if(!window.familyTree_editor)
+  		window.familyTree_editor = new familyTree({width:700,height:400,radius:9,container:'#treeEditor',linesGrp:'#lineGrp',nodesGrp:'#nodeGrp'});
+  	</script>
+</body>
+</html>

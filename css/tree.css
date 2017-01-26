@@ -1,0 +1,25 @@
+#pedigree{
+			width:700px;
+			height: 400px;
+			margin: 0 auto;
+			padding: 0px;
+		}
+		.modal-content{
+			width:90%;
+		}
+
+		svg{
+			background-color: #D3D3D3;
+		}
+
+		img.tools{
+			width:20px;
+		}
+
+		li a.active{
+			background-color: #D3D3D3;
+		}
+
+		i{
+			color: gray;
+		}
